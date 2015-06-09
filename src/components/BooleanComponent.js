@@ -1,28 +1,20 @@
 var React = require('react');
 var mui = require("material-ui");
-var TextField = mui.TextField;
+var Checkbox = mui.Checkbox;
 var request = require("browser-request");
 
-/**
- * States:
- * 0 - Standing by
- * 1 - loading
- * 2 - success
- * 3 - failure
- */
-
-var TextComponent = React.createClass({
+var BooleanComponent = React.createClass({
 	getInitialState: function() {
-		console.log(this.props)
 		return {
-			value: this.props.value,
+			value: !!this.props.value,
 			key: this.props.keyValue,
 			saveState: 0
 		};
 	},
 	changeValue: function() {
+		console.log("TRIGGER");
 		this.setState({
-			value: this.refs.field.getValue(),
+			value: this.refs.field.isChecked(),
 			saveState: 1
 		});
 		var self = this;
@@ -66,19 +58,17 @@ var TextComponent = React.createClass({
 			stateIndicator = <i className="material-icons">warning</i>
 		}
 		return (
-			<div className="TextComponent" >
-				<TextField
+			<div className="BooleanComponent" >
+				<Checkbox
 					ref="field"
-					hintText="Enter value"
-					floatingLabelText={this.props.keyValue} 
-					value={state.value} 
-					onChange={this.changeValue}
+					label={[this.props.keyValue, stateIndicator]}
+					defaultChecked={this.state.value}
+					onCheck={this.changeValue}
 					/>
-				{stateIndicator}
 			</div>
 		);
 	}
 
 });
 
-module.exports = TextComponent;
+module.exports = BooleanComponent;

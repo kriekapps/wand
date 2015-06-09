@@ -4,9 +4,9 @@ var React = require('react');
 var mui = require("material-ui");
 var ThemeManager = new mui.Styles.ThemeManager();
 var AppBar = mui.AppBar;
-var Checkbox = mui.Checkbox;
 var RaisedButton = mui.RaisedButton;
 var TextComponent = require("./TextComponent.js");
+var BooleanComponent = require("./BooleanComponent.js");
 var request = require("browser-request");
 var _ = require("lodash");
 
@@ -45,9 +45,10 @@ var RestEditorApp = React.createClass({
 	  							url={this.props.url} />);
   			}
   			if (_.isBoolean(this.state[key])) {
-	  			elements.push(<Checkbox
-								  checked={this.state[key]}
-								  label={key} />);
+	  			elements.push(<BooleanComponent
+								  value={this.state[key]}
+								  keyValue={key} 
+								  url={this.props.url} />);
   			}
   			if (_.isArray(this.state[key])) {
 	  			elements.push(<div><RaisedButton label={key} primary={true} /></div>);

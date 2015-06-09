@@ -1,3 +1,23 @@
+@keyframes spinning {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(359deg);
+  }
+}
+
+@-webkit-keyframes spinning {
+  0% {
+    -webkit-transform: rotate(0deg);
+  }
+
+  100% {
+    -webkit-transform: rotate(359deg);
+  }
+}
+
 .rest-editor {
   .contents {
     padding: 5%;
@@ -6,4 +26,15 @@
       margin-bottom: 20px;
     }
   }
+
+  .TextComponent, .BooleanComponent {
+
+    .spinning {
+      animation: spinning 1s infinite;
+      -webkit-animation: spinning 1s infinite;
+      
+    }
+  }
+
+
 }
