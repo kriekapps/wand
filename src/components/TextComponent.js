@@ -13,7 +13,6 @@ var request = require("browser-request");
 
 var TextComponent = React.createClass({
 	getInitialState: function() {
-		console.log(this.props)
 		return {
 			value: this.props.value,
 			key: this.props.keyValue,
@@ -54,15 +53,14 @@ var TextComponent = React.createClass({
 		});
 	},
 	render: function() {
-		var state = this.state;
 		var stateIndicator;
-		if (state.saveState === 1) {
+		if (this.state.saveState === 1) {
 			stateIndicator = <i className="material-icons spinning">cached</i>
 		}
-		if (state.saveState === 2) {
+		if (this.state.saveState === 2) {
 			stateIndicator = <i className="material-icons" style={{color: "#4CAF50"}}>done</i>
 		}
-		if (state.saveState === 3) {
+		if (this.state.saveState === 3) {
 			stateIndicator = <i className="material-icons">warning</i>
 		}
 		return (
@@ -71,7 +69,7 @@ var TextComponent = React.createClass({
 					ref="field"
 					hintText="Enter value"
 					floatingLabelText={this.props.keyValue} 
-					value={state.value} 
+					value={this.state.value} 
 					onChange={this.changeValue}
 					/>
 				{stateIndicator}

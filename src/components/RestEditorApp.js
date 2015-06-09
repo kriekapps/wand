@@ -16,18 +16,14 @@ require('../styles/main.less');
 
 var RestEditorApp = React.createClass({
 	getInitialState: function() {
-		return {};
+		return {
+			url: this.props.url,
+			contents: {}
+		};
 	},
 	componentDidMount: function() {
 		var self = this;
-		request.get(this.props.url, function(err, res, body) {
-			try {
-				body = JSON.parse(body)
-			} catch(err) {
-				console.log(err);
-			}
-			self.setState(body);
-		});
+		this.fetchData();
 	},
 	getChildContext: function() {
 		//?? Nem tudom, miért kell, de itt van leírva: http://material-ui.com/#/customization/themes
@@ -35,31 +31,49 @@ var RestEditorApp = React.createClass({
 	      muiTheme: ThemeManager.getCurrentTheme()
 	    };
 	},
+	fetchData: function() {
+		var self = this;
+		request.get(this.state.url, function(err, res, body) {
+			try {
+				body = JSON.parse(body)
+			} catch(err) {
+				console.log(err);
+			}
+			self.setState({contents: body });
+		});
+	},
+	updateURL: function(event) {
+		console.log(event.target);
+		this.setState({
+			url: this.state.url + "/" + event.target.textContent
+		});
+		this.fetchData();
+	},
   	render: function() {
   		var elements = [];
-  		for (var key in this.state) {
-  			if (_.isString(this.state[key]) || _.isNumber(this.state[key])) {
+  		for (var key in this.state.contents) {
+  			if (_.isString(this.state.contents[key]) || _.isNumber(this.state.contents[key])) {
 	  			elements.push(<TextComponent
-	  							value={this.state[key]}
+	  							value={this.state.contents[key]}
 	  							keyValue={key} 
-	  							url={this.props.url} />);
+	  							url={this.state.url} />);
   			}
-  			if (_.isBoolean(this.state[key])) {
+  			if (_.isBoolean(this.state.contents[key])) {
 	  			elements.push(<BooleanComponent
-								  value={this.state[key]}
+								  value={this.state.contents[key]}
 								  keyValue={key} 
-								  url={this.props.url} />);
+								  url={this.state.url} />);
   			}
-  			if (_.isArray(this.state[key])) {
+  			if (_.isArray(this.state.contents[key])) {
 	  			elements.push(<div><RaisedButton label={key} primary={true} /></div>);
   			}
-  			if (_.isObject(this.state[key]) && !_.isArray(this.state[key])) {
-	  			elements.push(<div><RaisedButton label={key} secondary={true} /></div>);
+  			if (_.isObject(this.state.contents[key]) && !_.isArray(this.state.contents[key])) {
+	  			elements.push(<div><RaisedButton label={key} secondary={true} onClick={this.updateURL}/></div>);
   			}
   		}
   		return (
   			<div className="rest-editor">
-      			<AppBar title={"Rest editor for " + this.props.url} />
+      			<AppBar title={"Rest editor for " + this.state.url} />
       			<div className="contents">
       				{elements}
       			</div>
