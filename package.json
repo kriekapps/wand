@@ -10,9 +10,11 @@
   "mainInput": "main",
   "mainOutput": "main",
   "dependencies": {
+    "assign": "^0.1.7",
     "browser-request": "^0.3.3",
     "events": "^1.0.2",
     "flux": "^2.0.1",
+    "immutable": "^3.7.3",
     "lodash": "^3.9.3",
     "material-ui": "^0.8.0",
     "normalize.css": "~3.0.3",
