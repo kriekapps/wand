@@ -23,15 +23,16 @@ var RestEditorApp = React.createClass({
 		DataActions.changeURL(this.props.url);
 		return {
 			url: DataStore.getURL(),
-			contents: DataStore.getData()
+			contents: DataStore.getData(),
+      loading: DataStore.isLoading()
 		};
 	},
 	componentDidMount: function() {
 		DataStore.addChangeListener((function() {
-      console.log(DataStore.getData());
 			this.setState({
 				url: DataStore.getURL(),
-				contents: DataStore.getData()
+				contents: DataStore.getData(),
+        loading: DataStore.isLoading()
 			});
 		}).bind(this));
 	},
@@ -45,17 +46,24 @@ var RestEditorApp = React.createClass({
 	 * Called whenever we want to change which node we display. Fetches the data for that node
 	 */
 	updateURL: function(key) {
-		var url = this.state.url + "/" + key;
+		var url = DataStore.getURL() + "/" + key;
+    console.log(url);
 		DataActions.changeURL(url);
 	},
 
   	render: function() {
+
+
   		var contents;
   		if (_.isArray(this.state.contents)) {
   			contents =  this.renderArray();
   		} else {
   			contents = this.renderObject();
   		}
+
+      if (this.state.loading) {
+        contents = (<p>Loading...</p>);
+      }
 
   		return (
   			<div className="rest-editor">
