@@ -2,13 +2,6 @@ var React = require('react');
 var mui = require("material-ui");
 
 var TextComponent = React.createClass({
-	getInitialState: function() {
-		return {
-			value: this.props.value,
-			key: this.props.keyValue,
-			saveState: 0
-		};
-	},
 	changeValue: function() {
 		this.setState({
 			value: this.refs.field.getValue(),

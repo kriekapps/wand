@@ -44,25 +44,30 @@ var DataActions = {
 	 */
 	changeURL: function(url) {
 
-		dispatch
-
-		Dispatcher.dispatch({
-			type: ActionConstants.URL_CHANGE,
-			source: CLIENT,
-			data: {
-				url: url
-			}
+		dispatch(ActionConstants.URL_CHANGE, {
+			url: url
 		});
 
+		dispatch(ActionConstants.NETWORK_LOADING_STARTED);
+
 		request.get(url, function(err, res, body) {
+			dispatch(ActionConstants.NETWORK_LOADING_FINISHED, err);
 			if (err) {
-				Dispatcher.dispatch({
-					type
-				})
+				dispatch(ActionConstants.NETWORK_ERROR, err);
 				return;
 			}
+			try {
+				body = JSON.parse(body);
+			} catch(err) {
+				dispatch(ActionConstants.ERROR, {
+					error: "Received invalid JSON response from server."
+				});
+				return;
+			}
+			dispatch(ActionConstants.RECEIVED_DATA, body);
+
 		});
 	}
 };
 
-modulex.exports = DataActions;
+module.exports = DataActions;

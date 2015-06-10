@@ -1,12 +1,14 @@
-var AppDispatcher = require('../dispatchers/Dispatcher');
+var Dispatcher = require('../dispatchers/Dispatcher');
 var EventEmitter = require('events').EventEmitter;
 var _ = require("lodash");
 var Immutable = require("immutable");
+var assign = require("object-assign");
+var ActionConstants = require("../ActionConstants.js");
 
 var _data = new Immutable.Map(),
 	_urlStack = new Immutable.Stack(),
 	_schema = new Immutable.Map(),
-	_isLoading = false,
+	_isLoading = false;
 
 var CHANGE_EVENT = "change";
 
@@ -14,7 +16,7 @@ var CHANGE_EVENT = "change";
  * A flux store holding just about everything for the app
  * @type {Object}
  */
-var Store = assign({}, EventEmitter.prototype, {
+var DataStore = assign({}, EventEmitter.prototype, {
 
 	/**
 	 * Set the loading status of the app to loading
@@ -61,6 +63,10 @@ var Store = assign({}, EventEmitter.prototype, {
 		this.emitChange();
 	},
 
+	getURL: function() {
+		return _urlStack.last();
+	},
+
 	/**
 	 * Emits a change event to the listening components
 	 */
@@ -87,8 +93,19 @@ var Store = assign({}, EventEmitter.prototype, {
 
 Dispatcher.register(function(action) {
 	switch(action.type) {
-
+		case ActionConstants.NETWORK_LOADING_STARTED:
+			DataStore.startLoading();
+			break;
+		case ActionConstants.NETWORK_LOADING_FINISHED:
+			DataStore.finishLoading();
+			break;
+		case ActionConstants.URL_CHANGE:
+			DataStore.switchToURL(action.data.url);
+			break;
+		case ActionConstants.RECEIVED_DATA:
+			DataStore.resetData(action.data);
+			break;
 	}
 });
 
-module.exports = Store;
+module.exports = DataStore;

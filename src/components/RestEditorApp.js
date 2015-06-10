@@ -10,6 +10,9 @@ var BooleanComponent = require("./BooleanComponent.js");
 var AddPropertyManager = require("./AddPropertyManager.js");
 var request = require("browser-request");
 var _ = require("lodash");
+var DataStore = require("../stores/DataStore.js");
+var ErrorStore = require("../stores/ErrorStore.js");
+var DataActions = require("../actions/DataActions.js");
 
 // CSS
 require('normalize.css');
@@ -17,15 +20,20 @@ require('../styles/main.less');
 
 var RestEditorApp = React.createClass({
 	getInitialState: function() {
+		DataActions.changeURL(this.props.url);
 		return {
-			url: this.props.url,
-			urlStack: [this.props.url],
-			contents: {}
+			url: DataStore.getURL(),
+			contents: DataStore.getData()
 		};
 	},
 	componentDidMount: function() {
-		var self = this;
-		this.fetchData();
+		DataStore.addChangeListener((function() {
+      console.log(DataStore.getData());
+			this.setState({
+				url: DataStore.getURL(),
+				contents: DataStore.getData()
+			});
+		}).bind(this));
 	},
 	getChildContext: function() {
 		//?? Nem tudom, miért kell, de itt van leírva: http://material-ui.com/#/customization/themes
@@ -33,53 +41,14 @@ var RestEditorApp = React.createClass({
 	      muiTheme: ThemeManager.getCurrentTheme()
 	    };
 	},
-	fetchData: function() {
-		var self = this;
-		request.get(this.state.url, function(err, res, body) {
-			try {
-				body = JSON.parse(body)
-			} catch(err) {
-				console.log(err);
-			}
-			self.setState({
-				contents: body,
-			});
-		});
-	},
 	/**
 	 * Called whenever we want to change which node we display. Fetches the data for that node
 	 */
 	updateURL: function(key) {
-		console.log(key);
-		var self = this;
 		var url = this.state.url + "/" + key;
-		var newStack = this.state.urlStack.slice().concat(this.state.url);
-		this.setState({
-			url: url,
-			urlStack: newStack
-		}, function() {
-			this.fetchData();
-		});
-	},
-	/**
-	 * Go one step back in the url stack / hierarchy
-	 */
-	back: function() {
-		var stack = this.state.urlStack.slice();
-		var url = stack.pop();
-		this.setState({
-			url: url,
-			urlStack: stack
-		}, function() {
-			this.fetchData();
-		});
+		DataActions.changeURL(url);
 	},
 
-	newPropertyAdded: function() {
-		console.log("new property added");
-		this.fetchData();
-	},
-	
   	render: function() {
   		var contents;
   		if (_.isArray(this.state.contents)) {
@@ -88,19 +57,13 @@ var RestEditorApp = React.createClass({
   			contents = this.renderObject();
   		}
 
-  		var backButton;
-  		if (this.state.urlStack.length > 1) {
-  			backButton = (<div><RaisedButton label="< Back" onClick={this.back} /></div>);
-  		}
-
   		return (
   			<div className="rest-editor">
-      			<AppBar title={"Wand for " + this.state.url} />
-      			<div className="contents">
-  					{backButton}
+      			<AppBar title="Wand" />
+            <div className="contents">
+              <p>{this.state.url}</p>
       				{contents}
       			</div>
-      			<AddPropertyManager url={this.state.url} onChange={this.newPropertyAdded} />
       		</div>
     	);
 

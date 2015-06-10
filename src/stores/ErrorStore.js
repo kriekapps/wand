@@ -1,7 +1,9 @@
-var AppDispatcher = require('../dispatchers/Dispatcher');
+var Dispatcher = require('../dispatchers/Dispatcher.js');
 var EventEmitter = require('events').EventEmitter;
 var _ = require("lodash");
 var Immutable = require("immutable");
+var ActionConstants = require("../ActionConstants.js");
+var assign = require("object-assign");
 
 var	_error = new Immutable.Stack();
 
@@ -11,7 +13,7 @@ var CHANGE_EVENT = "change";
  * A flux store holding errors happening in the app
  * @type {Object}
  */
-var Store = assign({}, EventEmitter.prototype, {
+var ErrorStore = assign({}, EventEmitter.prototype, {
 
 	getErrors: function() {
 		return _errors.toJSON();
@@ -52,8 +54,11 @@ var Store = assign({}, EventEmitter.prototype, {
 
 Dispatcher.register(function(action) {
 	switch(action.type) {
-
+		case ActionConstants.ERROR:
+		case ActionConstants.NETWORK_ERROR:
+			ErrorStore.addError(action.data.error);
+			break;
 	}
 });
 
-module.exports = Store;
+module.exports = ErrorStore;
