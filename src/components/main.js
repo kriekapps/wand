@@ -12,4 +12,4 @@ injectTapEventPlugin();
 
 var content = document.getElementById('content');
 
-React.render(<RestEditorApp url="http://cantrip.kriekapps.com/marci" />, content);
+React.render(<RestEditorApp url="http://cantrip.kriekapps.com/foobar" />, content);

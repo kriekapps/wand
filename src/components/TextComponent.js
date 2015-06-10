@@ -30,6 +30,12 @@ var TextComponent = React.createClass({
 			self.saveChangeToServer();
 		}, 500);
 	},
+	componentWillReceiveProps: function(nextProps) {
+		this.setState({
+			value: nextProps.value,
+			key: nextProps.keyValue
+		});
+	},
 	cooldown: 0,
 	saveChangeToServer: function() {
 		var data = {};
@@ -68,7 +74,7 @@ var TextComponent = React.createClass({
 				<TextField
 					ref="field"
 					hintText="Enter value"
-					floatingLabelText={this.props.keyValue} 
+					floatingLabelText={this.state.key} 
 					value={this.state.value} 
 					onChange={this.changeValue}
 					/>

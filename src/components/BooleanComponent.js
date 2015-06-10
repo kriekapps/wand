@@ -24,6 +24,11 @@ var BooleanComponent = React.createClass({
 		}, 500);
 	},
 	cooldown: 0,
+	componentWillReceiveProps: function(nextProps) {
+		this.setState({
+			value: nextProps.value,
+		});
+	},
 	saveChangeToServer: function() {
 		var data = {};
 		data[this.props.keyValue] = this.state.value;
