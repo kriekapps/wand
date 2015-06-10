@@ -74,7 +74,11 @@ var RestEditorApp = React.createClass({
 			this.fetchData();
 		});
 	},
-	
+
+	newPropertyAdded: function() {
+		console.log("new property added");
+		this.fetchData();
+	},
 	
   	render: function() {
   		var contents;
@@ -96,7 +100,7 @@ var RestEditorApp = React.createClass({
   					{backButton}
       				{contents}
       			</div>
-      			<AddPropertyManager url={this.state.url} />
+      			<AddPropertyManager url={this.state.url} onChange={this.newPropertyAdded} />
       		</div>
     	);
 

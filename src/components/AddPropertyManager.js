@@ -13,6 +13,7 @@ var AddPropertyManager = React.createClass({
 		this.refs.newPropertyDialog.show();
 	},
 	addProperty: function(name, type) {
+		var self = this;
 		var data = {};
 		data[name] = type;
 		request({
@@ -20,7 +21,7 @@ var AddPropertyManager = React.createClass({
 			url: this.props.url,
 			json: data
 		}, function(err, res, body) {
-			
+			self.props.onChange();
 		});
 	},
 	render: function() {

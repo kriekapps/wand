@@ -43,7 +43,6 @@ var NewPropertyDialog = React.createClass({
 	},
 	_submit: function() {
 		if (this.state.name !== "") {
-			console.log(this.state);
 			this.props.onSubmit(
 				this.state.name,
 				this.state.type
