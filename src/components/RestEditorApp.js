@@ -7,6 +7,7 @@ var AppBar = mui.AppBar;
 var RaisedButton = mui.RaisedButton;
 var TextComponent = require("./TextComponent.js");
 var BooleanComponent = require("./BooleanComponent.js");
+var AddPropertyManager = require("./AddPropertyManager.js");
 var request = require("browser-request");
 var _ = require("lodash");
 
@@ -45,6 +46,9 @@ var RestEditorApp = React.createClass({
 			});
 		});
 	},
+	/**
+	 * Called whenever we want to change which node we display. Fetches the data for that node
+	 */
 	updateURL: function(key) {
 		console.log(key);
 		var self = this;
@@ -57,6 +61,9 @@ var RestEditorApp = React.createClass({
 			this.fetchData();
 		});
 	},
+	/**
+	 * Go one step back in the url stack / hierarchy
+	 */
 	back: function() {
 		var stack = this.state.urlStack.slice();
 		var url = stack.pop();
@@ -67,6 +74,8 @@ var RestEditorApp = React.createClass({
 			this.fetchData();
 		});
 	},
+	
+	
   	render: function() {
   		var contents;
   		if (_.isArray(this.state.contents)) {
@@ -82,24 +91,32 @@ var RestEditorApp = React.createClass({
 
   		return (
   			<div className="rest-editor">
-      			<AppBar title={"Rest editor for " + this.state.url} />
+      			<AppBar title={"Wand for " + this.state.url} />
       			<div className="contents">
   					{backButton}
       				{contents}
       			</div>
+      			<AddPropertyManager url={this.state.url} />
       		</div>
     	);
 
   		
   	},
+  	/**
+  	 * If the currently displayed node is an array, display its elements, with a details button for object
+  	 */
   	renderArray: function() {
   		var elements = [];
   		for (var i = 0; i < this.state.contents.length; i++) {
-  			elements.push(<div>{this.state.contents[i]._id} <RaisedButton label="Details" onClick={this.updateURL.bind(this, this.state.contents[i]._id)} /></div>);
+  			var detailsButton = _.isObject(this.state.contents[i]) ? (<RaisedButton label="Details" onClick={this.updateURL.bind(this, this.state.contents[i]._id)} />) : "";
+  			elements.push(<div>{this.state.contents[i]._id || this.state.contents[i]} {detailsButton}</div>);
   		}
   		return elements;
   		
   	},
+  	/**
+  	 * If the currently displayed node is an object, display all its keys with a details button for its embedded objects and arrays
+  	 */
   	renderObject: function() {
   		var elements = [];
   		for (var key in this.state.contents) {
