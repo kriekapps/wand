@@ -58,13 +58,29 @@ var DataStore = assign({}, EventEmitter.prototype, {
 		this.emitChange();
 	},
 
-	switchToURL: function(url) {
-		_urlStack = _urlStack.push(url)
+	/**
+	 * Move forward with a new url in the url stack
+	 * @param  {String} url 
+	 */
+	moveForward: function(url) {
+		_urlStack = _urlStack.push(url);
+		this.emitChange();
+	},
+
+	/**
+	 * Move back one step in the url stack
+	 */
+	moveBack: function() {
+		_urlStack = _urlStack.pop();
 		this.emitChange();
 	},
 
 	getURL: function() {
-		return _urlStack.last();
+		return _urlStack.peek();
+	},
+
+	getURLStack: function() {
+		return _urlStack;
 	},
 
 	/**
@@ -100,7 +116,10 @@ Dispatcher.register(function(action) {
 			DataStore.finishLoading();
 			break;
 		case ActionConstants.URL_CHANGE:
-			DataStore.switchToURL(action.data.url);
+			DataStore.moveForward(action.data.url);
+			break;
+		case ActionConstants.URL_BACKWARD:
+			DataStore.moveBack();
 			break;
 		case ActionConstants.RECEIVED_DATA:
 			DataStore.resetData(action.data);

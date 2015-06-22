@@ -47,12 +47,10 @@ var RestEditorApp = React.createClass({
 	 */
 	updateURL: function(key) {
 		var url = DataStore.getURL() + "/" + key;
-    console.log(url);
 		DataActions.changeURL(url);
 	},
 
   	render: function() {
-
 
   		var contents;
   		if (_.isArray(this.state.contents)) {
@@ -65,11 +63,17 @@ var RestEditorApp = React.createClass({
         contents = (<p>Loading...</p>);
       }
 
+      var backButton;
+      if (DataStore.getURLStack().size > 1) {
+        backButton = (<RaisedButton label="< Back" onClick={this.back} />);
+      }
+
   		return (
   			<div className="rest-editor">
       			<AppBar title="Wand" />
             <div className="contents">
               <p>{this.state.url}</p>
+              {backButton}
       				{contents}
       			</div>
       		</div>
@@ -117,7 +121,13 @@ var RestEditorApp = React.createClass({
 
   		return elements;
 
-  	}
+  	},
+    /**
+     * Go back in the url stack to the previously viewed url
+     */
+    back: function() {
+      DataActions.goBack();
+    }
 });
 
 //?? Nem tudom, miért kell, de itt van leírva: http://material-ui.com/#/customization/themes

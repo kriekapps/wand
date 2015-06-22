@@ -1,8 +1,19 @@
-module.exports = {
-	URL_CHANGE: 0,
-	NETWORK_LOADING_STARTED: 1,
-	NETWORK_ERROR: 2,
-	NETWORK_LOADING_FINISHED: 3,
-	ERROR: 4,
-	RECEIVED_DATA: 5
-}
+var keyMirror = require("keyMirror");
+var _ = require("lodash");
+
+var constants = keyMirror({
+	URL_CHANGE: null,
+	URL_BACKWARD: null,
+	NETWORK_LOADING_STARTED: null,
+	NETWORK_ERROR: null,
+	NETWORK_LOADING_FINISHED: null,
+	ERROR: null,
+	RECEIVED_DATA: null
+});
+
+//Aliases
+constants = _.merge(constants, {
+	URL_FORWARD: "URL_CHANGE"
+});
+
+module.exports = constants;
